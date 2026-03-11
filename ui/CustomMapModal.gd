@@ -133,10 +133,13 @@ func _ready():
 	var r_width = create_row("Width: ", app_theme, 40, 1000, 5)
 	grid_dim.add_child(r_width[0]); grid_dim.add_child(r_width[1]); w_box = r_width[2]
 	
-	var reset_scroll = func(): if scroll_container: scroll_container.set_deferred("scroll_vertical", 0)
-	r_width[1].get_child(0).focus_entered.connect(reset_scroll)
-	r_width[1].get_child(2).focus_entered.connect(reset_scroll)
-	w_box.get_line_edit().focus_entered.connect(reset_scroll)
+	var reset_scroll = func():
+		if scroll_container:
+			get_tree().process_frame.connect(func(): if scroll_container: scroll_container.scroll_vertical = 0, CONNECT_ONE_SHOT)
+	
+	for c in [r_width[1].get_child(0), r_width[1].get_child(1), r_width[1].get_child(2), w_box, w_box.get_line_edit()]:
+		if c and c.has_signal("focus_entered"):
+			c.focus_entered.connect(reset_scroll)
 
 	var r_depth = create_row("Depth: ", app_theme, 40, 1000, 5)
 	grid_dim.add_child(r_depth[0]); grid_dim.add_child(r_depth[1]); d_box = r_depth[2]
@@ -182,6 +185,20 @@ func _ready():
 	var btn_cancel = create_styled_button(" Cancel ")
 	btn_cancel.pressed.connect(_on_cancel)
 	h_buttons.add_child(btn_cancel)
+	
+	btn_confirm.focus_neighbor_right = btn_confirm.get_path_to(btn_cancel)
+	btn_cancel.focus_neighbor_left = btn_cancel.get_path_to(btn_confirm)
+	
+	var r_minus = relic_box.get_parent().get_child(0)
+	var r_plus = relic_box.get_parent().get_child(2)
+	
+	btn_confirm.focus_neighbor_top = btn_confirm.get_path_to(r_minus)
+	btn_cancel.focus_neighbor_top = btn_cancel.get_path_to(r_plus)
+	
+	r_minus.focus_neighbor_bottom = r_minus.get_path_to(btn_confirm)
+	relic_box.focus_neighbor_bottom = relic_box.get_path_to(btn_confirm)
+	r_plus.focus_neighbor_bottom = r_plus.get_path_to(btn_cancel)
+	gadget_box.get_parent().get_child(2).focus_neighbor_bottom = gadget_box.get_parent().get_child(2).get_path_to(btn_cancel)
 	
 	if Engine.has_singleton("Style"):
 		Style.init(center_container)
