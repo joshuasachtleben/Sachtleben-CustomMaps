@@ -45,6 +45,9 @@ func inject_custom_map_sizes(base_node: Node, pgc: Node):
 	e.loadoutScale = 2.0
 	e.name = ms
 	e.setChoice("Custom Settings", ms, null, "Configure custom map sizes, resources, and speed mutators")
+	pgc.add_child(e)
+	
+	e.connect("select", Callable(base_node, "mapSizeSelected").bind(ms))
 	e.connect("select", Callable(base_node, "updateBlockVisibility"))
 	e.connect("select", Callable(self, "_on_custom_map_selected"))
 	
