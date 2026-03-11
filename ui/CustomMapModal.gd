@@ -14,6 +14,12 @@ var relic_box: SpinBox
 
 var center_container: CenterContainer
 var panel: PanelContainer
+var scroll_container: ScrollContainer
+
+func _input(event):
+	if visible and event.is_action_pressed("ui_cancel"):
+		_on_cancel()
+		get_viewport().set_input_as_handled()
 
 func create_section_label(text: String, app_theme) -> Label:
 	var lbl = Label.new()
@@ -91,13 +97,13 @@ func _ready():
 		title.add_theme_font_override("font", app_theme.default_font)
 	title_margin.add_child(title)
 
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(500, 420)
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.follow_focus = true
-	main_vbox.add_child(scroll)
+	scroll_container = ScrollContainer.new()
+	scroll_container.custom_minimum_size = Vector2(500, 420)
+	scroll_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll_container.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll_container.follow_focus = true
+	main_vbox.add_child(scroll_container)
 
 	var m_container = MarginContainer.new()
 	m_container.add_theme_constant_override("margin_top", 10)
@@ -105,7 +111,7 @@ func _ready():
 	m_container.add_theme_constant_override("margin_left", 30)
 	m_container.add_theme_constant_override("margin_right", 30)
 	m_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(m_container)
+	scroll_container.add_child(m_container)
 	
 	var vbox = VBoxContainer.new()
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -126,6 +132,12 @@ func _ready():
 	vbox.add_child(grid_dim)
 	var r_width = create_row("Width: ", app_theme, 40, 1000, 5)
 	grid_dim.add_child(r_width[0]); grid_dim.add_child(r_width[1]); w_box = r_width[2]
+	
+	var reset_scroll = func(): if scroll_container: scroll_container.set_deferred("scroll_vertical", 0)
+	r_width[1].get_child(0).focus_entered.connect(reset_scroll)
+	r_width[1].get_child(2).focus_entered.connect(reset_scroll)
+	w_box.get_line_edit().focus_entered.connect(reset_scroll)
+
 	var r_depth = create_row("Depth: ", app_theme, 40, 1000, 5)
 	grid_dim.add_child(r_depth[0]); grid_dim.add_child(r_depth[1]); d_box = r_depth[2]
 
@@ -218,6 +230,9 @@ func open_modal(config: Dictionary):
 	
 	current_blocker = preload("res://mods-unpacked/Sachtleben-CustomMaps/ui/ModalBlocker.gd").new()
 	current_blocker.integrate(self)
+	
+	if scroll_container:
+		scroll_container.scroll_vertical = 0
 	
 	w_box.get_line_edit().grab_focus()
 
