@@ -25,10 +25,10 @@ func create_section_label(text: String, app_theme) -> Label:
 	var lbl = Label.new()
 	lbl.text = text
 	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl.add_theme_font_size_override("font_size", 28)
+	lbl.add_theme_font_size_override("font_size", 26)
 	if app_theme and app_theme.default_font:
 		lbl.add_theme_font_override("font", app_theme.default_font)
-	lbl.add_theme_color_override("font_color", Color(0.82, 0.65, 0.45))
+	lbl.add_theme_color_override("font_color", Color(0.67, 0.58, 0.6))
 	return lbl
 
 func create_row(label_text: String, app_theme, sb_min: float, sb_max: float, sb_step: float) -> Array:
@@ -45,12 +45,22 @@ func create_row(label_text: String, app_theme, sb_min: float, sb_max: float, sb_
 	box.min_value = sb_min
 	box.max_value = sb_max
 	box.step = sb_step
-	box.focus_mode = Control.FOCUS_ALL
+	
+	box.add_theme_icon_override("updown", ImageTexture.new())
+	var line_edit = box.get_line_edit()
+	if line_edit:
+		line_edit.focus_mode = Control.FOCUS_CLICK
+		line_edit.alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.focus_mode = Control.FOCUS_NONE
+	
 	var btn_plus = create_styled_button("+")
 	
 	hbox.add_child(btn_minus)
 	hbox.add_child(box)
 	hbox.add_child(btn_plus)
+	
+	btn_minus.focus_neighbor_right = btn_minus.get_path_to(btn_plus)
+	btn_plus.focus_neighbor_left = btn_plus.get_path_to(btn_minus)
 	
 	btn_minus.pressed.connect(func(): box.value -= box.step)
 	btn_plus.pressed.connect(func(): box.value += box.step)
@@ -127,9 +137,29 @@ func _ready():
 		g.add_theme_constant_override("v_separation", 10)
 		return g
 
-	vbox.add_child(create_section_label("- Map Dimensions -", app_theme))
-	var grid_dim = create_grid.call()
-	vbox.add_child(grid_dim)
+	var section_panel_style = preload("res://gui/panels/panel_inside_dark.tres")
+	var create_section = func(title_text):
+		var pnl = PanelContainer.new()
+		pnl.add_theme_stylebox_override("panel", section_panel_style)
+		var m_cont = MarginContainer.new()
+		m_cont.add_theme_constant_override("margin_top", 16)
+		m_cont.add_theme_constant_override("margin_bottom", 20)
+		m_cont.add_theme_constant_override("margin_left", 20)
+		m_cont.add_theme_constant_override("margin_right", 20)
+		pnl.add_child(m_cont)
+		var sec_vbox = VBoxContainer.new()
+		sec_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+		sec_vbox.add_theme_constant_override("separation", 15)
+		m_cont.add_child(sec_vbox)
+		var lbl = create_section_label(title_text, app_theme)
+		sec_vbox.add_child(lbl)
+		var grid = create_grid.call()
+		sec_vbox.add_child(grid)
+		return [pnl, grid]
+
+	var sec_dim = create_section.call("Map Dimensions")
+	vbox.add_child(sec_dim[0])
+	var grid_dim = sec_dim[1]
 	var r_width = create_row("Width: ", app_theme, 40, 1000, 5)
 	grid_dim.add_child(r_width[0]); grid_dim.add_child(r_width[1]); w_box = r_width[2]
 	
@@ -145,15 +175,15 @@ func _ready():
 	var r_depth = create_row("Depth: ", app_theme, 40, 1000, 5)
 	grid_dim.add_child(r_depth[0]); grid_dim.add_child(r_depth[1]); d_box = r_depth[2]
 
-	vbox.add_child(create_section_label("- Keepers -", app_theme))
-	var grid_mut = create_grid.call()
-	vbox.add_child(grid_mut)
+	var sec_mut = create_section.call("Keepers")
+	vbox.add_child(sec_mut[0])
+	var grid_mut = sec_mut[1]
 	var r_speed = create_row("Movement Speed (%): ", app_theme, 25, 500, 10)
 	grid_mut.add_child(r_speed[0]); grid_mut.add_child(r_speed[1]); speed_box = r_speed[2]
 
-	vbox.add_child(create_section_label("- Resources -", app_theme))
-	var grid_res = create_grid.call()
-	vbox.add_child(grid_res)
+	var sec_res = create_section.call("Resources")
+	vbox.add_child(sec_res[0])
+	var grid_res = sec_res[1]
 	var r_iron = create_row("Iron Clusters (%): ", app_theme, 0, 1000, 10)
 	grid_res.add_child(r_iron[0]); grid_res.add_child(r_iron[1]); iron_box = r_iron[2]
 	var r_water = create_row("Water (%): ", app_theme, 0, 1000, 10)
@@ -161,9 +191,9 @@ func _ready():
 	var r_cobalt = create_row("Cobalt (%): ", app_theme, 0, 1000, 10)
 	grid_res.add_child(r_cobalt[0]); grid_res.add_child(r_cobalt[1]); cobalt_box = r_cobalt[2]
 
-	vbox.add_child(create_section_label("- Points of Interest -", app_theme))
-	var grid_poi = create_grid.call()
-	vbox.add_child(grid_poi)
+	var sec_poi = create_section.call("Points of Interest")
+	vbox.add_child(sec_poi[0])
+	var grid_poi = sec_poi[1]
 	var r_gadget = create_row("Gadgets: ", app_theme, 0, 10, 1)
 	grid_poi.add_child(r_gadget[0]); grid_poi.add_child(r_gadget[1]); gadget_box = r_gadget[2]
 	var r_relic = create_row("Relic Chambers: ", app_theme, 0, 5, 1)
