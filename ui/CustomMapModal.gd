@@ -268,7 +268,7 @@ func open_modal(config: Dictionary):
 	if scroll_container:
 		scroll_container.scroll_vertical = 0
 	
-	w_box.get_line_edit().grab_focus()
+	w_box.get_parent().get_child(0).grab_focus()
 
 func close_blocker():
 	if current_blocker:
