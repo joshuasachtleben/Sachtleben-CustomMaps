@@ -77,6 +77,7 @@ func _ready():
 	scroll.custom_minimum_size = Vector2(500, 600)
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
 	panel.add_child(scroll)
 
 	var m_container = MarginContainer.new()
