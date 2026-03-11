@@ -70,19 +70,38 @@ func _ready():
 	add_child(center_container)
 
 	panel = PanelContainer.new()
-	panel.custom_minimum_size = Vector2(450, 400)
+	panel.custom_minimum_size = Vector2(550, 650)
 	center_container.add_child(panel)
 
+	var main_vbox = VBoxContainer.new()
+	main_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	main_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel.add_child(main_vbox)
+
+	var title_margin = MarginContainer.new()
+	title_margin.add_theme_constant_override("margin_top", 30)
+	title_margin.add_theme_constant_override("margin_bottom", 10)
+	main_vbox.add_child(title_margin)
+
+	var title = Label.new()
+	title.text = "Custom Settings"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 36)
+	if app_theme and app_theme.default_font:
+		title.add_theme_font_override("font", app_theme.default_font)
+	title_margin.add_child(title)
+
 	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(500, 600)
+	scroll.custom_minimum_size = Vector2(500, 420)
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.follow_focus = true
-	panel.add_child(scroll)
+	main_vbox.add_child(scroll)
 
 	var m_container = MarginContainer.new()
-	m_container.add_theme_constant_override("margin_top", 30)
-	m_container.add_theme_constant_override("margin_bottom", 30)
+	m_container.add_theme_constant_override("margin_top", 10)
+	m_container.add_theme_constant_override("margin_bottom", 20)
 	m_container.add_theme_constant_override("margin_left", 30)
 	m_container.add_theme_constant_override("margin_right", 30)
 	m_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -93,14 +112,6 @@ func _ready():
 	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	vbox.add_theme_constant_override("separation", 20)
 	m_container.add_child(vbox)
-	
-	var title = Label.new()
-	title.text = "Custom Settings"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 36)
-	if app_theme and app_theme.default_font:
-		title.add_theme_font_override("font", app_theme.default_font)
-	vbox.add_child(title)
 
 	var create_grid = func():
 		var g = GridContainer.new()
@@ -142,12 +153,15 @@ func _ready():
 	var r_relic = create_row("Relic Chambers: ", app_theme, 0, 5, 1)
 	grid_poi.add_child(r_relic[0]); grid_poi.add_child(r_relic[1]); relic_box = r_relic[2]
 
-	vbox.add_child(HSeparator.new())
-	
+	var bottom_margin = MarginContainer.new()
+	bottom_margin.add_theme_constant_override("margin_top", 10)
+	bottom_margin.add_theme_constant_override("margin_bottom", 30)
+	main_vbox.add_child(bottom_margin)
+
 	var h_buttons = HBoxContainer.new()
 	h_buttons.alignment = BoxContainer.ALIGNMENT_CENTER
 	h_buttons.add_theme_constant_override("separation", 40)
-	vbox.add_child(h_buttons)
+	bottom_margin.add_child(h_buttons)
 	
 	var btn_confirm = create_styled_button(" Confirm ")
 	btn_confirm.pressed.connect(_on_confirm)
