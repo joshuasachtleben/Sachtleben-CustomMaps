@@ -1,0 +1,16 @@
+# Godot-specific ignores
+.godot/
+*.translation
+
+# OS-specific ignores
+.DS_Store
+Thumbs.db
+
+# Any backup or temporary files
+*~
+*.bak
+*.tmp
+
+# Ideally ignore any zipped builds if you put them here
+*.zip
+*.pck
