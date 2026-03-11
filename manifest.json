@@ -1,27 +1,27 @@
 {
-  "name": "CustomMaps",
-  "namespace": "Sachtleben",
-  "version_number": "1.0.0",
-  "description": "Allows setting custom game map properties.",
-  "website_url": "https://sachtleben.me",
-  "dependencies": [],
-  "extra": {
-	"godot": {
-	  "authors": [
-		"Joshua Sachtleben"
-	  ],
-	  "compatible_game_version": [
-		"4.2.0"
-	  ],
-	  "compatible_mod_loader_version": [
-		"7.0.0"
-	  ],
-	  "description_rich": "",
-	  "image": null,
-	  "incompatibilities": [],
-	  "load_before": [],
-	  "optional_dependencies": [],
-	  "tags": []
+	"name": "CustomMaps",
+	"namespace": "Sachtleben",
+	"version_number": "1.1.0",
+	"description": "Allows setting custom game map properties.",
+	"website_url": "https://sachtleben.me",
+	"dependencies": [],
+	"extra": {
+		"godot": {
+			"authors": [
+				"Joshua Sachtleben"
+			],
+			"compatible_game_version": [
+				"4.2.2"
+			],
+			"compatible_mod_loader_version": [
+				"7.0.0"
+			],
+			"description_rich": "",
+			"image": null,
+			"incompatibilities": [],
+			"load_before": [],
+			"optional_dependencies": [],
+			"tags": []
+		}
 	}
-  }
 }

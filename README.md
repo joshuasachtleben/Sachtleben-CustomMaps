@@ -45,7 +45,7 @@ To run it, execute the following command from your console using the Godot 4.2.2
 
 ```powershell
 # Adjust path to the godot executable as necessary
-& "path/to/godot.exe" -s mods-unpacked/Sachtleben-CustomMaps/generate_thumbnail.gd
+& "path/to/godot.exe" -s mods-unpacked/Sachtleben-CustomMaps/.generate_thumbnail.gd
 ```
 
 This will automatically generate a perfectly crisp, 512x512 pixel-art `preview.png` inside the repository folder, featuring removed background boxes, transparent layers, and dynamically remapped UI color palettes to perfectly match the Dome Keeper theme.
