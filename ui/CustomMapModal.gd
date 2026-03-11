@@ -17,7 +17,7 @@ var panel: PanelContainer
 var scroll_container: ScrollContainer
 
 func _input(event):
-	if visible and event.is_action_pressed("ui_cancel"):
+	if visible and (event.is_action_pressed("ui_cancel") or event.is_action_pressed("escape")):
 		_on_cancel()
 		get_viewport().set_input_as_handled()
 
@@ -96,8 +96,8 @@ func _ready():
 	panel.add_child(main_vbox)
 
 	var title_margin = MarginContainer.new()
-	title_margin.add_theme_constant_override("margin_top", 10)
-	title_margin.add_theme_constant_override("margin_bottom", 10)
+	title_margin.add_theme_constant_override("margin_top", 0)
+	title_margin.add_theme_constant_override("margin_bottom", 0)
 	main_vbox.add_child(title_margin)
 
 	var title = Label.new()
@@ -122,7 +122,7 @@ func _ready():
 	main_vbox.add_child(scroll_container)
 
 	var m_container = MarginContainer.new()
-	m_container.add_theme_constant_override("margin_top", 10)
+	m_container.add_theme_constant_override("margin_top", 0)
 	m_container.add_theme_constant_override("margin_bottom", 20)
 	m_container.add_theme_constant_override("margin_left", 30)
 	m_container.add_theme_constant_override("margin_right", 30)
