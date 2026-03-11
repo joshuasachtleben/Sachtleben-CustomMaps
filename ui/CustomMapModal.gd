@@ -181,6 +181,19 @@ func _ready():
 	var r_depth = create_row("Depth: ", app_theme, 40, 1000, 5)
 	grid_dim.add_child(r_depth[0]); grid_dim.add_child(r_depth[1]); d_box = r_depth[2]
 
+	var dim_warning = Label.new()
+	dim_warning.text = "Any value higher than 150 for width/depth may cause longer than expected\nmap generation times. Please wait for the map to complete loading if it stalls."
+	dim_warning.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	dim_warning.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var small_font_settings = preload("res://gui/fontsettings/SmallFontSettings.tres")
+	if small_font_settings:
+		dim_warning.label_settings = small_font_settings
+	else:
+		dim_warning.add_theme_font_size_override("font_size", 18)
+		dim_warning.add_theme_color_override("font_color", Color(0.88, 0.81, 0.86))
+	dim_warning.custom_minimum_size = Vector2(400, 0)
+	grid_dim.get_parent().add_child(dim_warning)
+
 	var sec_mut = create_section.call("Keepers")
 	vbox.add_child(sec_mut[0])
 	var grid_mut = sec_mut[1]
