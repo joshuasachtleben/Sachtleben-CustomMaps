@@ -135,7 +135,8 @@ func _ready():
 	
 	var reset_scroll = func():
 		if scroll_container:
-			get_tree().process_frame.connect(func(): if scroll_container: scroll_container.scroll_vertical = 0, CONNECT_ONE_SHOT)
+			var tw = get_tree().create_tween()
+			tw.tween_property(scroll_container, "scroll_vertical", 0, 0.05)
 	
 	for c in [r_width[1].get_child(0), r_width[1].get_child(1), r_width[1].get_child(2), w_box, w_box.get_line_edit()]:
 		if c and c.has_signal("focus_entered"):
@@ -189,16 +190,32 @@ func _ready():
 	btn_confirm.focus_neighbor_right = btn_confirm.get_path_to(btn_cancel)
 	btn_cancel.focus_neighbor_left = btn_cancel.get_path_to(btn_confirm)
 	
+	var all_rows = [r_width, r_depth, r_speed, r_iron, r_water, r_cobalt, r_gadget, r_relic]
+	for i in range(all_rows.size() - 1):
+		var curr = all_rows[i]
+		var nxt = all_rows[i + 1]
+		
+		for j in [0, 2]:
+			var c_btn = curr[1].get_child(j)
+			var n_btn = nxt[1].get_child(j)
+			c_btn.focus_neighbor_bottom = c_btn.get_path_to(n_btn)
+			n_btn.focus_neighbor_top = n_btn.get_path_to(c_btn)
+			
+		var c_box = curr[2].get_line_edit()
+		var n_box = nxt[2].get_line_edit()
+		c_box.focus_neighbor_bottom = c_box.get_path_to(n_box)
+		n_box.focus_neighbor_top = n_box.get_path_to(c_box)
+
 	var r_minus = relic_box.get_parent().get_child(0)
+	var r_box = relic_box.get_line_edit()
 	var r_plus = relic_box.get_parent().get_child(2)
 	
 	btn_confirm.focus_neighbor_top = btn_confirm.get_path_to(r_minus)
 	btn_cancel.focus_neighbor_top = btn_cancel.get_path_to(r_plus)
 	
 	r_minus.focus_neighbor_bottom = r_minus.get_path_to(btn_confirm)
-	relic_box.focus_neighbor_bottom = relic_box.get_path_to(btn_confirm)
+	r_box.focus_neighbor_bottom = r_box.get_path_to(btn_confirm)
 	r_plus.focus_neighbor_bottom = r_plus.get_path_to(btn_cancel)
-	gadget_box.get_parent().get_child(2).focus_neighbor_bottom = gadget_box.get_parent().get_child(2).get_path_to(btn_cancel)
 	
 	if Engine.has_singleton("Style"):
 		Style.init(center_container)
