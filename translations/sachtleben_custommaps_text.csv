@@ -1,0 +1,20 @@
+keys,en
+sachtleben_custommaps.custom_settings.title,Custom Settings
+sachtleben_custommaps.sections.dim.title,Map Dimensions
+sachtleben_custommaps.sections.dim.width,Width:
+sachtleben_custommaps.sections.dim.depth,Depth:
+sachtleben_custommaps.sections.dim.desc,"Any value higher than 150 for width/depth may cause longer than expected map generation times. Please wait for the map to complete loading if it stalls."
+sachtleben_custommaps.sections.mut.title,Keepers
+sachtleben_custommaps.sections.mut.speed,Movement Speed (%):
+sachtleben_custommaps.sections.mut.desc,Adjust the base movement speed of your Keeper.
+sachtleben_custommaps.sections.res.title,Resources
+sachtleben_custommaps.sections.res.iron,Iron Clusters (%):
+sachtleben_custommaps.sections.res.water,Water (%):
+sachtleben_custommaps.sections.res.cobalt,Cobalt (%):
+sachtleben_custommaps.sections.res.desc,Scale the frequency and size of resource deposits found throughout the crust.
+sachtleben_custommaps.sections.poi.title,Points of Interest
+sachtleben_custommaps.sections.poi.gadget,Gadgets:
+sachtleben_custommaps.sections.poi.relic,Relic Chambers:
+sachtleben_custommaps.sections.poi.desc,Determine the number of gadget drop pods and secondary relic chambers buried in the map.
+sachtleben_custommaps.buttons.confirm,Confirm
+sachtleben_custommaps.buttons.cancel,Cancel

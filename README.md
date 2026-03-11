@@ -7,9 +7,13 @@ Custom Maps is a ModLoader extension for *Dome Keeper* that allows you to easily
 
 ## Features
 * **Full Custom Size Control**: Set your exact desired Map Width and Depth.
-* **Native UI Integration**: The settings menu is seamlessly integrated and perfectly matches the base game's dark mode visual identity via palette shaders.
-* **Safe Boundaries**: Hardcoded lower limits (minimum 40x40) to prevent engine crashes or soft-locks during the procedural world generation.
-* **Input Isolation**: Background input blocking ensures you don't accidentally navigate the underlying loadout menus while configuring your map.
+* **Keeper Movement Constraints**: Adjust your base Keeper movement speed to match the size of your massive world generation!
+* **Scalable Resources**: Fine-tune the density drop-rates for Iron, Water, and Cobalt throughout the crust.
+* **Underground Distribution**: Pick the precise quantity of buried Gadget Pods and additional Relic Chambers.
+* **Native UI Integration**: The settings menu is seamlessly integrated utilizing Dome Keeper's native UI textures, panel 9-slicing margins, font hierarchies, and menu audio.
+* **Safe Boundaries**: Hardcoded lower limits prevent engine crashes or soft-locks during the procedural world generation, while warning notes dynamically display when map boundaries exceed heavy-computation lengths.
+* **Input Isolation**: Background input blocking completely restricts navigating underlying loadout elements.
+* **Full Localization Support**: Completely built out with Godot string namespaces ready for global translations!
 
 ## Installation
 
@@ -45,3 +49,14 @@ To run it, execute the following command from your console using the Godot 4.2.2
 ```
 
 This will automatically generate a perfectly crisp, 512x512 pixel-art `preview.png` inside the repository folder, featuring removed background boxes, transparent layers, and dynamically remapped UI color palettes to perfectly match the Dome Keeper theme.
+
+
+## Contributing to Translations
+If you'd like to help translate this mod into other languages, contributions are highly appreciated! The mod's localization is set up following the [official Dome Keeper Modding Translations guide](https://github.com/DomeKeeperMods/Docs/wiki/Translations).
+
+To contribute a new language or update an existing one:
+1. Fork the repository.
+2. Open the `translations/sachtleben_custommaps_text.csv` file.
+3. If your language is new, add its standard Godot language code (e.g., `de`, `fr`, `es`, `zh`) to the top header row (e.g., `keys,en,de`).
+4. Add your translated text to the very end of each corresponding row.
+5. Submit a Pull Request with your updated `.csv` file! Godot will automatically handle compiling the `.translation` binary files.

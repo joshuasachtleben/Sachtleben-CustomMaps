@@ -101,7 +101,7 @@ func _ready():
 	main_vbox.add_child(title_margin)
 
 	var title = Label.new()
-	title.text = "Custom Settings"
+	title.text = tr("sachtleben_custommaps.custom_settings.title")
 	title.uppercase = true
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var heading_font = preload("res://gui/fonts/FontHeading.tres")
@@ -163,10 +163,10 @@ func _ready():
 		sec_vbox.add_child(grid)
 		return [pnl, grid]
 
-	var sec_dim = create_section.call("Map Dimensions")
+	var sec_dim = create_section.call(tr("sachtleben_custommaps.sections.dim.title"))
 	vbox.add_child(sec_dim[0])
 	var grid_dim = sec_dim[1]
-	var r_width = create_row("Width: ", app_theme, 40, 1000, 5)
+	var r_width = create_row(tr("sachtleben_custommaps.sections.dim.width"), app_theme, 40, 1000, 5)
 	grid_dim.add_child(r_width[0]); grid_dim.add_child(r_width[1]); w_box = r_width[2]
 	
 	var reset_scroll = func():
@@ -178,45 +178,51 @@ func _ready():
 		if c and c.has_signal("focus_entered"):
 			c.focus_entered.connect(reset_scroll)
 
-	var r_depth = create_row("Depth: ", app_theme, 40, 1000, 5)
+	var r_depth = create_row(tr("sachtleben_custommaps.sections.dim.depth"), app_theme, 40, 1000, 5)
 	grid_dim.add_child(r_depth[0]); grid_dim.add_child(r_depth[1]); d_box = r_depth[2]
 
-	var dim_warning = Label.new()
-	dim_warning.text = "Any value higher than 150 for width/depth may cause longer than expected map generation times. Please wait for the map to complete loading if it stalls."
-	dim_warning.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	dim_warning.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	var small_font_settings = preload("res://gui/fontsettings/SmallFontSettings.tres")
-	if small_font_settings:
-		dim_warning.label_settings = small_font_settings
-	else:
-		dim_warning.add_theme_font_size_override("font_size", 18)
-		dim_warning.add_theme_color_override("font_color", Color(0.88, 0.81, 0.86))
-	dim_warning.custom_minimum_size = Vector2(460, 0)
-	grid_dim.get_parent().add_child(dim_warning)
+	var create_desc = func(text_desc: String):
+		var desc = Label.new()
+		desc.text = text_desc
+		desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		var small_font_settings = preload("res://gui/fontsettings/SmallFontSettings.tres")
+		if small_font_settings:
+			desc.label_settings = small_font_settings
+		else:
+			desc.add_theme_font_size_override("font_size", 18)
+			desc.add_theme_color_override("font_color", Color(0.88, 0.81, 0.86))
+		desc.custom_minimum_size = Vector2(460, 0)
+		return desc
 
-	var sec_mut = create_section.call("Keepers")
+	grid_dim.get_parent().add_child(create_desc.call(tr("sachtleben_custommaps.sections.dim.desc")))
+
+	var sec_mut = create_section.call(tr("sachtleben_custommaps.sections.mut.title"))
 	vbox.add_child(sec_mut[0])
 	var grid_mut = sec_mut[1]
-	var r_speed = create_row("Movement Speed (%): ", app_theme, 25, 500, 10)
+	var r_speed = create_row(tr("sachtleben_custommaps.sections.mut.speed"), app_theme, 25, 500, 10)
 	grid_mut.add_child(r_speed[0]); grid_mut.add_child(r_speed[1]); speed_box = r_speed[2]
+	grid_mut.get_parent().add_child(create_desc.call(tr("sachtleben_custommaps.sections.mut.desc")))
 
-	var sec_res = create_section.call("Resources")
+	var sec_res = create_section.call(tr("sachtleben_custommaps.sections.res.title"))
 	vbox.add_child(sec_res[0])
 	var grid_res = sec_res[1]
-	var r_iron = create_row("Iron Clusters (%): ", app_theme, 0, 1000, 10)
+	var r_iron = create_row(tr("sachtleben_custommaps.sections.res.iron"), app_theme, 0, 1000, 10)
 	grid_res.add_child(r_iron[0]); grid_res.add_child(r_iron[1]); iron_box = r_iron[2]
-	var r_water = create_row("Water (%): ", app_theme, 0, 1000, 10)
+	var r_water = create_row(tr("sachtleben_custommaps.sections.res.water"), app_theme, 0, 1000, 10)
 	grid_res.add_child(r_water[0]); grid_res.add_child(r_water[1]); water_box = r_water[2]
-	var r_cobalt = create_row("Cobalt (%): ", app_theme, 0, 1000, 10)
+	var r_cobalt = create_row(tr("sachtleben_custommaps.sections.res.cobalt"), app_theme, 0, 1000, 10)
 	grid_res.add_child(r_cobalt[0]); grid_res.add_child(r_cobalt[1]); cobalt_box = r_cobalt[2]
+	grid_res.get_parent().add_child(create_desc.call(tr("sachtleben_custommaps.sections.res.desc")))
 
-	var sec_poi = create_section.call("Points of Interest")
+	var sec_poi = create_section.call(tr("sachtleben_custommaps.sections.poi.title"))
 	vbox.add_child(sec_poi[0])
 	var grid_poi = sec_poi[1]
-	var r_gadget = create_row("Gadgets: ", app_theme, 0, 10, 1)
+	var r_gadget = create_row(tr("sachtleben_custommaps.sections.poi.gadget"), app_theme, 0, 10, 1)
 	grid_poi.add_child(r_gadget[0]); grid_poi.add_child(r_gadget[1]); gadget_box = r_gadget[2]
-	var r_relic = create_row("Relic Chambers: ", app_theme, 0, 5, 1)
+	var r_relic = create_row(tr("sachtleben_custommaps.sections.poi.relic"), app_theme, 0, 5, 1)
 	grid_poi.add_child(r_relic[0]); grid_poi.add_child(r_relic[1]); relic_box = r_relic[2]
+	grid_poi.get_parent().add_child(create_desc.call(tr("sachtleben_custommaps.sections.poi.desc")))
 
 	var bottom_margin = MarginContainer.new()
 	bottom_margin.add_theme_constant_override("margin_top", 10)
@@ -228,11 +234,11 @@ func _ready():
 	h_buttons.add_theme_constant_override("separation", 40)
 	bottom_margin.add_child(h_buttons)
 	
-	var btn_confirm = create_styled_button(" Confirm ")
+	var btn_confirm = create_styled_button(" " + tr("sachtleben_custommaps.buttons.confirm") + " ")
 	btn_confirm.pressed.connect(_on_confirm)
 	h_buttons.add_child(btn_confirm)
-	
-	var btn_cancel = create_styled_button(" Cancel ")
+
+	var btn_cancel = create_styled_button(" " + tr("sachtleben_custommaps.buttons.cancel") + " ")
 	btn_cancel.pressed.connect(_on_cancel)
 	h_buttons.add_child(btn_cancel)
 	
@@ -312,6 +318,7 @@ func create_styled_button(btn_text: String) -> Button:
 var current_blocker
 
 func open_modal(config: Dictionary):
+	Audio.sound("gui_pause_start")
 	w_box.value = clamp(config.get("custom_map_width", 70), w_box.min_value, w_box.max_value)
 	d_box.value = clamp(config.get("custom_map_depth", 100), d_box.min_value, d_box.max_value)
 	speed_box.value = clamp(config.get("custom_keeper_speed", 100), speed_box.min_value, speed_box.max_value)
@@ -337,6 +344,7 @@ func close_blocker():
 		current_blocker = null
 
 func _on_confirm():
+	Audio.sound("gui_select")
 	visible = false
 	close_blocker()
 	var config = {
@@ -352,6 +360,7 @@ func _on_confirm():
 	emit_signal("configuration_confirmed", config)	 
 
 func _on_cancel():
+	Audio.sound("gui_pause_stop")
 	visible = false
 	close_blocker()
 	emit_signal("cancelled")

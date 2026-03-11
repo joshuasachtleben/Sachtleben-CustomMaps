@@ -12,6 +12,7 @@ func _init():
 	ModLoaderLog.info("Init", CUSTOM_MAPS_LOG)
 	dir = ModLoaderMod.get_unpacked_dir() + CUSTOM_MAPS_DIR + "/"
 	ext_dir = dir + "extensions/"
+	ModLoaderMod.add_translation("res://mods-unpacked/Sachtleben-CustomMaps/translations/sachtleben_custommaps_text.en.translation")
 	ModLoaderMod.install_script_extension(ext_dir + "game/GameWorld.gd")
 	add_to_group("mod_init")
 
