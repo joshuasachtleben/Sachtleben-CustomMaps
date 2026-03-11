@@ -87,6 +87,7 @@ func _ready():
 
 	panel = PanelContainer.new()
 	panel.custom_minimum_size = Vector2(550, 650)
+	panel.add_theme_stylebox_override("panel", preload("res://gui/panels/panel_outside.tres"))
 	center_container.add_child(panel)
 
 	var main_vbox = VBoxContainer.new()
@@ -95,16 +96,21 @@ func _ready():
 	panel.add_child(main_vbox)
 
 	var title_margin = MarginContainer.new()
-	title_margin.add_theme_constant_override("margin_top", 30)
+	title_margin.add_theme_constant_override("margin_top", 10)
 	title_margin.add_theme_constant_override("margin_bottom", 10)
 	main_vbox.add_child(title_margin)
 
 	var title = Label.new()
 	title.text = "Custom Settings"
+	title.uppercase = true
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 36)
-	if app_theme and app_theme.default_font:
-		title.add_theme_font_override("font", app_theme.default_font)
+	var heading_font = preload("res://gui/fonts/FontHeading.tres")
+	if heading_font:
+		title.add_theme_font_override("font", heading_font)
+	var heading_settings = preload("res://gui/fontsettings/HeadingFontSettings.tres")
+	if heading_settings:
+		title.label_settings = heading_settings
+	title.add_theme_font_size_override("font_size", 42)
 	title_margin.add_child(title)
 
 	scroll_container = ScrollContainer.new()
@@ -246,6 +252,18 @@ func _ready():
 	r_minus.focus_neighbor_bottom = r_minus.get_path_to(btn_confirm)
 	r_box.focus_neighbor_bottom = r_box.get_path_to(btn_confirm)
 	r_plus.focus_neighbor_bottom = r_plus.get_path_to(btn_cancel)
+
+	var scroll_bottom = func():
+		if scroll_container:
+			var tw = get_tree().create_tween()
+			var max_s = 9999
+			if scroll_container.get_v_scroll_bar():
+				max_s = scroll_container.get_v_scroll_bar().max_value
+			tw.tween_property(scroll_container, "scroll_vertical", max_s, 0.05)
+
+	for c in [r_minus, r_box, r_plus, btn_confirm, btn_cancel]:
+		if c and c.has_signal("focus_entered"):
+			c.focus_entered.connect(scroll_bottom)
 	
 	if Engine.has_singleton("Style"):
 		Style.init(center_container)
