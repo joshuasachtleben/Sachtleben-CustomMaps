@@ -86,7 +86,7 @@ func _ready():
 	add_child(center_container)
 
 	panel = PanelContainer.new()
-	panel.custom_minimum_size = Vector2(550, 650)
+	panel.custom_minimum_size = Vector2(550, 0)
 	panel.add_theme_stylebox_override("panel", preload("res://gui/panels/panel_outside.tres"))
 	center_container.add_child(panel)
 
@@ -220,7 +220,7 @@ func _ready():
 
 	var bottom_margin = MarginContainer.new()
 	bottom_margin.add_theme_constant_override("margin_top", 10)
-	bottom_margin.add_theme_constant_override("margin_bottom", 30)
+	bottom_margin.add_theme_constant_override("margin_bottom", 0)
 	main_vbox.add_child(bottom_margin)
 
 	var h_buttons = HBoxContainer.new()
