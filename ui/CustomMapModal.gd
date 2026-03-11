@@ -1,20 +1,62 @@
 extends CanvasLayer
 
-signal dimensions_confirmed(width, depth)
+signal configuration_confirmed(config: Dictionary)
 signal cancelled
 
 var w_box: SpinBox
 var d_box: SpinBox
+var speed_box: SpinBox
+var iron_box: SpinBox
+var water_box: SpinBox
+var cobalt_box: SpinBox
+var gadget_box: SpinBox
+var relic_box: SpinBox
 
 var center_container: CenterContainer
 var panel: PanelContainer
+
+func create_section_label(text: String, app_theme) -> Label:
+	var lbl = Label.new()
+	lbl.text = text
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.add_theme_font_size_override("font_size", 28)
+	if app_theme and app_theme.default_font:
+		lbl.add_theme_font_override("font", app_theme.default_font)
+	lbl.add_theme_color_override("font_color", Color(0.82, 0.65, 0.45))
+	return lbl
+
+func create_row(label_text: String, app_theme, sb_min: float, sb_max: float, sb_step: float) -> Array:
+	var lbl = Label.new()
+	lbl.text = label_text
+	lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	lbl.add_theme_font_size_override("font_size", 24)
+	if app_theme and app_theme.default_font:
+		lbl.add_theme_font_override("font", app_theme.default_font)
+		
+	var hbox = HBoxContainer.new()
+	var btn_minus = create_styled_button("-")
+	var box = SpinBox.new()
+	box.min_value = sb_min
+	box.max_value = sb_max
+	box.step = sb_step
+	box.focus_mode = Control.FOCUS_ALL
+	var btn_plus = create_styled_button("+")
+	
+	hbox.add_child(btn_minus)
+	hbox.add_child(box)
+	hbox.add_child(btn_plus)
+	
+	btn_minus.pressed.connect(func(): box.value -= box.step)
+	btn_plus.pressed.connect(func(): box.value += box.step)
+	
+	return [lbl, hbox, box]
 
 func _ready():
 	layer = 150
 	visible = false
 	
 	var backdrop = ColorRect.new()
-	backdrop.color = Color(0, 0, 0, 0.7)
+	backdrop.color = Color(0, 0, 0, 0.8)
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	backdrop.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(backdrop)
@@ -28,89 +70,78 @@ func _ready():
 	add_child(center_container)
 
 	panel = PanelContainer.new()
-	panel.custom_minimum_size = Vector2(400, 250)
-		
+	panel.custom_minimum_size = Vector2(450, 400)
 	center_container.add_child(panel)
+
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(500, 600)
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	panel.add_child(scroll)
 
 	var m_container = MarginContainer.new()
 	m_container.add_theme_constant_override("margin_top", 30)
 	m_container.add_theme_constant_override("margin_bottom", 30)
 	m_container.add_theme_constant_override("margin_left", 30)
 	m_container.add_theme_constant_override("margin_right", 30)
-	panel.add_child(m_container)
+	m_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(m_container)
 	
 	var vbox = VBoxContainer.new()
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vbox.add_theme_constant_override("separation", 20)
 	m_container.add_child(vbox)
 	
 	var title = Label.new()
-	title.text = "Custom Map Dimensions"
+	title.text = "Custom Settings"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 36)
 	if app_theme and app_theme.default_font:
 		title.add_theme_font_override("font", app_theme.default_font)
 	vbox.add_child(title)
-	
-	var sep1 = HSeparator.new()
-	sep1.custom_minimum_size = Vector2(0, 20)
-	vbox.add_child(sep1)
-	
-	var grid = GridContainer.new()
-	grid.columns = 2
-	grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	grid.add_theme_constant_override("h_separation", 20)
-	grid.add_theme_constant_override("v_separation", 15)
-	vbox.add_child(grid)
-	
-	var w_label = Label.new()
-	w_label.text = "Width: "
-	w_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	w_label.add_theme_font_size_override("font_size", 24)
-	if app_theme and app_theme.default_font:
-		w_label.add_theme_font_override("font", app_theme.default_font)
-	grid.add_child(w_label)
-	
-	var w_hbox = HBoxContainer.new()
-	var w_minus = create_styled_button("-")
-	w_box = SpinBox.new()
-	w_box.min_value = 40
-	w_box.max_value = 1000
-	w_box.step = 5
-	w_box.focus_mode = Control.FOCUS_ALL
-	var w_plus = create_styled_button("+")
-	w_hbox.add_child(w_minus)
-	w_hbox.add_child(w_box)
-	w_hbox.add_child(w_plus)
-	w_minus.pressed.connect(func(): w_box.value -= w_box.step)
-	w_plus.pressed.connect(func(): w_box.value += w_box.step)
-	grid.add_child(w_hbox)
-	
-	var d_label = Label.new()
-	d_label.text = "Depth: "
-	d_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	d_label.add_theme_font_size_override("font_size", 24)
-	if app_theme and app_theme.default_font:
-		d_label.add_theme_font_override("font", app_theme.default_font)
-	grid.add_child(d_label)
-	
-	var d_hbox = HBoxContainer.new()
-	var d_minus = create_styled_button("-")
-	d_box = SpinBox.new()
-	d_box.min_value = 40
-	d_box.max_value = 1000
-	d_box.step = 5
-	d_box.focus_mode = Control.FOCUS_ALL
-	var d_plus = create_styled_button("+")
-	d_hbox.add_child(d_minus)
-	d_hbox.add_child(d_box)
-	d_hbox.add_child(d_plus)
-	d_minus.pressed.connect(func(): d_box.value -= d_box.step)
-	d_plus.pressed.connect(func(): d_box.value += d_box.step)
-	grid.add_child(d_hbox)
-	
-	var sep2 = HSeparator.new()
-	sep2.custom_minimum_size = Vector2(0, 20)
-	vbox.add_child(sep2)
+
+	var create_grid = func():
+		var g = GridContainer.new()
+		g.columns = 2
+		g.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		g.add_theme_constant_override("h_separation", 20)
+		g.add_theme_constant_override("v_separation", 10)
+		return g
+
+	vbox.add_child(create_section_label("- Map Dimensions -", app_theme))
+	var grid_dim = create_grid.call()
+	vbox.add_child(grid_dim)
+	var r_width = create_row("Width: ", app_theme, 40, 1000, 5)
+	grid_dim.add_child(r_width[0]); grid_dim.add_child(r_width[1]); w_box = r_width[2]
+	var r_depth = create_row("Depth: ", app_theme, 40, 1000, 5)
+	grid_dim.add_child(r_depth[0]); grid_dim.add_child(r_depth[1]); d_box = r_depth[2]
+
+	vbox.add_child(create_section_label("- Keepers -", app_theme))
+	var grid_mut = create_grid.call()
+	vbox.add_child(grid_mut)
+	var r_speed = create_row("Movement Speed (%): ", app_theme, 25, 500, 10)
+	grid_mut.add_child(r_speed[0]); grid_mut.add_child(r_speed[1]); speed_box = r_speed[2]
+
+	vbox.add_child(create_section_label("- Resources -", app_theme))
+	var grid_res = create_grid.call()
+	vbox.add_child(grid_res)
+	var r_iron = create_row("Iron Clusters (%): ", app_theme, 0, 1000, 10)
+	grid_res.add_child(r_iron[0]); grid_res.add_child(r_iron[1]); iron_box = r_iron[2]
+	var r_water = create_row("Water (%): ", app_theme, 0, 1000, 10)
+	grid_res.add_child(r_water[0]); grid_res.add_child(r_water[1]); water_box = r_water[2]
+	var r_cobalt = create_row("Cobalt (%): ", app_theme, 0, 1000, 10)
+	grid_res.add_child(r_cobalt[0]); grid_res.add_child(r_cobalt[1]); cobalt_box = r_cobalt[2]
+
+	vbox.add_child(create_section_label("- Points of Interest -", app_theme))
+	var grid_poi = create_grid.call()
+	vbox.add_child(grid_poi)
+	var r_gadget = create_row("Gadgets: ", app_theme, 0, 10, 1)
+	grid_poi.add_child(r_gadget[0]); grid_poi.add_child(r_gadget[1]); gadget_box = r_gadget[2]
+	var r_relic = create_row("Relic Chambers: ", app_theme, 0, 5, 1)
+	grid_poi.add_child(r_relic[0]); grid_poi.add_child(r_relic[1]); relic_box = r_relic[2]
+
+	vbox.add_child(HSeparator.new())
 	
 	var h_buttons = HBoxContainer.new()
 	h_buttons.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -158,9 +189,15 @@ func create_styled_button(btn_text: String) -> Button:
 
 var current_blocker
 
-func open_modal(current_w: int, current_d: int):
-	w_box.value = clamp(current_w, w_box.min_value, w_box.max_value)
-	d_box.value = clamp(current_d, d_box.min_value, d_box.max_value)
+func open_modal(config: Dictionary):
+	w_box.value = clamp(config.get("custom_map_width", 70), w_box.min_value, w_box.max_value)
+	d_box.value = clamp(config.get("custom_map_depth", 100), d_box.min_value, d_box.max_value)
+	speed_box.value = clamp(config.get("custom_keeper_speed", 100), speed_box.min_value, speed_box.max_value)
+	iron_box.value = clamp(config.get("custom_iron", 100), iron_box.min_value, iron_box.max_value)
+	water_box.value = clamp(config.get("custom_water", 100), water_box.min_value, water_box.max_value)
+	cobalt_box.value = clamp(config.get("custom_cobalt", 100), cobalt_box.min_value, cobalt_box.max_value)
+	gadget_box.value = clamp(config.get("custom_gadget", 3), gadget_box.min_value, gadget_box.max_value)
+	relic_box.value = clamp(config.get("custom_relic", 1), relic_box.min_value, relic_box.max_value)
 
 	visible = true
 	
@@ -177,10 +214,19 @@ func close_blocker():
 func _on_confirm():
 	visible = false
 	close_blocker()
-	emit_signal("dimensions_confirmed", int(w_box.value), int(d_box.value))	 
+	var config = {
+		"custom_map_width": int(w_box.value),
+		"custom_map_depth": int(d_box.value),
+		"custom_keeper_speed": float(speed_box.value),
+		"custom_iron": float(iron_box.value),
+		"custom_water": float(water_box.value),
+		"custom_cobalt": float(cobalt_box.value),
+		"custom_gadget": int(gadget_box.value),
+		"custom_relic": int(relic_box.value)
+	} 
+	emit_signal("configuration_confirmed", config)	 
 
 func _on_cancel():
 	visible = false
 	close_blocker()
 	emit_signal("cancelled")
-

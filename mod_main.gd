@@ -18,7 +18,7 @@ func _init():
 func _ready():
 	modal_instance = custom_modal_scene.new()
 	add_child(modal_instance)
-	modal_instance.connect("dimensions_confirmed", Callable(self, "_on_dimensions_confirmed"))
+	modal_instance.connect("configuration_confirmed", Callable(self, "_on_configuration_confirmed"))
 	
 	get_tree().node_added.connect(Callable(self, "_on_node_added"))
 
@@ -44,10 +44,7 @@ func inject_custom_map_sizes(base_node: Node, pgc: Node):
 	var e = preload("res://stages/loadout/LoadoutChoice.tscn").instantiate()
 	e.loadoutScale = 2.0
 	e.name = ms
-	e.setChoice("Custom Dimensions", ms, null, "Configure a custom width and depth limit")
-	pgc.add_child(e)
-	
-	e.connect("select", Callable(base_node, "mapSizeSelected").bind(ms))
+        e.setChoice("Custom Settings", ms, null, "Configure custom map sizes, resources, and speed mutators")
 	e.connect("select", Callable(base_node, "updateBlockVisibility"))
 	e.connect("select", Callable(self, "_on_custom_map_selected"))
 	
@@ -56,13 +53,11 @@ func inject_custom_map_sizes(base_node: Node, pgc: Node):
 		base_node.mapSizeSelected(ms)
 
 func _on_custom_map_selected():
-	var current_w = int(Level.loadout.modeConfig.get("custom_map_width", 70))
-	var current_d = int(Level.loadout.modeConfig.get("custom_map_depth", 100))
-	modal_instance.open_modal(current_w, current_d)
+	modal_instance.open_modal(Level.loadout.modeConfig)
 
-func _on_dimensions_confirmed(w: int, d: int):
-	Level.loadout.modeConfig["custom_map_width"] = w
-	Level.loadout.modeConfig["custom_map_depth"] = d
+func _on_configuration_confirmed(config: Dictionary):
+	for key in config:
+		Level.loadout.modeConfig[key] = config[key]
 	if current_base_node and is_instance_valid(current_base_node) and current_base_node.has_method("resetPersistMetaCooldown"):
 		current_base_node.resetPersistMetaCooldown()
 
