@@ -28,5 +28,30 @@ func prepareRegularLevelStart(levelStartData: LevelStartData):
 		# A huge map is 70x100 = 7000 tiles, tileCount=6000 (~0.85 ratio)
 		levelStartData.mapArchetype.tileCount = int(custom_width * custom_depth * 0.85)
 
+		# Custom Resource Multipliers
+		var mult_iron = float(modeConfig.get("custom_iron", 100)) / 100.0
+		var mult_water = float(modeConfig.get("custom_water", 100)) / 100.0
+		var mult_cobalt = float(modeConfig.get("custom_cobalt", 100)) / 100.0
+
+		levelStartData.mapArchetype.iron_cluster_rate *= mult_iron
+		levelStartData.mapArchetype.water_rate *= mult_water
+		levelStartData.mapArchetype.cobalt_rate *= mult_cobalt
+
+		# Custom Chambers
+		levelStartData.mapArchetype.relics = int(modeConfig.get("custom_relic", 1))
+		levelStartData.mapArchetype.gadgets = int(modeConfig.get("custom_gadget", 3))
+
 		# Make sure it stays customized for UI and loading configurations
 		modeConfig[CONST.MODE_CONFIG_MAP_ARCHETYPE] = "regular-custom"
+
+func levelInitialized():
+	super.levelInitialized()
+	var modeConfig = Level.loadout.modeConfig if Level and Level.loadout else {}
+	if modeConfig.get(CONST.MODE_CONFIG_MAP_ARCHETYPE, "") == "regular-custom":
+		var speed_mult = float(modeConfig.get("custom_keeper_speed", 100)) / 100.0
+		if speed_mult != 1.0:
+			for keeper in Keepers.getAll():
+				if "playerId" in keeper and "techId" in keeper:
+					var base_speed = Data.of(keeper.playerId + "." + keeper.techId + ".maxSpeed")
+					var extra_speed = base_speed * (speed_mult - 1.0)
+					Data.changeByInt(keeper.playerId + ".keeper.speedBuff", int(extra_speed))
